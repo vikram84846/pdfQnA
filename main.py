@@ -7,11 +7,17 @@ from dotenv import load_dotenv
 from utils import store_embeddings,get_prompt, chatmodel, get_retriver
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 
 app = FastAPI()
 
-
+app.add_middleware(CORSMiddleware, allow_origins =["*"],
+                 allow_methods =["*"],
+                 allow_headers = ["*"] 
+                 )
 
 
 
