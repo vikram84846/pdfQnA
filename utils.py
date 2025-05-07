@@ -3,8 +3,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 import os
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain.chat_models import ChatOpenAI
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
+# from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import  create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import  ChatPromptTemplate
@@ -43,12 +44,13 @@ def get_retriver(filepath):
 
 def get_prompt():
     system_prompt = (
-    "You are an assistant for question-answering tasks. "
-    "Use the following pieces of retrieved context to answer "
-    "the question. If you don't know the answer, say that you "
-    "don't know. Use three sentences maximum and keep the "
-    "answer concise.\n\n{context}"
+    "You are an intelligent assistant for question-answering tasks. "
+    "Use the following pieces of retrieved context to generate a clear, complete, and accurate answer "
+    "to the question. The answer should adapt in length based on what is required for correctness and clarity. "
+    "If the question can be answered in a sentence or two, keep it brief. If it requires more detail, provide a thorough explanation. "
+    "If you don't know the answer, say you don't know.\n\n{context}"
 )
+
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
@@ -58,5 +60,8 @@ def get_prompt():
     return prompt
 
 def chatmodel():
-    chat_model = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temp=0.5,max_tokens= 500)
+    chat_model = ChatOpenAI(
+    openai_api_base ="https://openrouter.ai/api/v1",
+    model_name = "deepseek/deepseek-r1-zero:free"
+)
     return chat_model

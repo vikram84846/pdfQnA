@@ -8,6 +8,7 @@ from utils import store_embeddings,get_prompt, chatmodel, get_retriver
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from fastapi.middleware.cors import CORSMiddleware
+import re
 
 
 
@@ -78,6 +79,10 @@ def query_pdf(file:str,query:str):
     question_answer_chain = create_stuff_documents_chain(chatmodel(),prompt=get_prompt())
     rag_chain = create_retrieval_chain(retriver,question_answer_chain)
     response = rag_chain.invoke({"input":query})
-    return {"answer": response["answer"]}
+    pattern = r"\\boxed\{([\s\S]*?)\}"
+    match = re.search(pattern, response["answer"])
+    if match:
+        answer = match.group(1)
+    return {"answer": answer}
     
 
